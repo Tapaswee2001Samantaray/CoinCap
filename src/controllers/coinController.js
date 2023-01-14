@@ -16,11 +16,13 @@ const getCoins = async function (req, res) {
                     marketCapUsd: coinData.data[i].marketCapUsd,
                     priceUsd: coinData.data[i].priceUsd
                 }
-                let createCoin = await coinModel.create(newObj);
+                await coinModel.create(newObj);
                 newArr.push(newObj);
             }
             return res.status(201).send({ status: true, message: "CoinCap has created." });
+
         } else {
+
             let getCoinsData = await coinModel.find().lean().select({ _id: 0, __v: 0 });
             for (let i = 0; i < getCoinsData.length; i++) {
                 getCoinsData[i].changePercent24Hr = coinData.data[i].changePercent24Hr;
@@ -30,6 +32,7 @@ const getCoins = async function (req, res) {
                 getCoinsData.sort((a, b) => (b.changePercent24Hr) - (a.changePercent24Hr));
             }
             return res.status(200).send({ "data": getCoinsData });
+
         }
     } catch (err) {
         return res.status(500).send({ status: false, msg: err.message });
