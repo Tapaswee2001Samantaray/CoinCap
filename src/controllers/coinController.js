@@ -8,7 +8,7 @@ const getCoins = async function (req, res) {
         let checkCoinData = await coinModel.find();
 
         if (checkCoinData.length == 0) {
-            let newArr = [];
+            
             for (let i = 0; i < coinData.data.length; i++) {
                 let newObj = {
                     symbol: coinData.data[i].symbol,
@@ -17,15 +17,14 @@ const getCoins = async function (req, res) {
                     priceUsd: coinData.data[i].priceUsd
                 }
                 await coinModel.create(newObj);
-                newArr.push(newObj);
             }
             return res.status(201).send({ status: true, message: "CoinCap has created." });
 
         } else {
 
-            let getCoinsData = await coinModel.find().lean().select({ _id: 0, __v: 0 });
+            let getCoinsData = await coinModel.find().select({ _id: 0, __v: 0 });
             for (let i = 0; i < getCoinsData.length; i++) {
-                getCoinsData[i].changePercent24Hr = coinData.data[i].changePercent24Hr;
+                getCoinsData[i]._doc.changePercent24Hr = coinData.data[i].changePercent24Hr;
             }
 
             for (let i = 0; i < getCoinsData.length; i++) {
