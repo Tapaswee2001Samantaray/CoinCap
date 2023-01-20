@@ -3,12 +3,20 @@ const coinModel = require("../models/coinsModel");
 
 const getCoins = async function (req, res) {
     try {
-        let data = await axios.get("https://api.coincap.io/v2/assets");
+        let option = {
+            method: "get",
+            url: "https://api.coincap.io/v2/assets",
+            headers: {
+                Authorization: "Bearer 01213021-558e-4a5d-a90f-9483f204067b"
+            }
+        }
+
+        let data = await axios(option);
         let coinData = data.data;
         let checkCoinData = await coinModel.find();
 
         if (checkCoinData.length == 0) {
-            
+
             for (let i = 0; i < coinData.data.length; i++) {
                 let newObj = {
                     symbol: coinData.data[i].symbol,
